@@ -1,0 +1,35 @@
+a:
+  passphrase: 'p1'
+  sign_passphrase: 'sp1'
+  salt: 's1'
+  prefix: ENVAULT_
+
+a1:
+  sign_passphrase: 'sp1'
+  salt: 's1'
+  prefix: ENVAULT_
+
+a2:
+  passphrase: 'p1'
+  prefix: ENVAULT_
+
+a3:
+  passphrase: 'p1'
+  sign_passphrase: 'sp1'
+  prefix: ENVAULT_
+
+a4:
+  passphrase: 'p1'
+  salt: 's1'
+  prefix: ENVAULT_
+
+a5:
+  salt: 's1'
+  prefix: ENVAULT_
+
+b:
+  passphrase: 'p2'
+  sign_passphrase: 'sp2'
+  salt: 's2'
+  prefix: ENVAULT_
+
