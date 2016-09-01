@@ -40,6 +40,7 @@ module Envault
     option :source, aliases: '-s', type: :string, required: true, desc: 'source'
     option :from_profile, type: :string, required: true, desc: 'from_profile'
     option :to_profile, type: :string, required: true, desc: 'to_profile'
+    option :overwrite, type: :boolean, default: false, desc: 'overwrite'
     def reencrypt_file
       yaml = YAML.load_file(options['source'])
       from = Core.new(
@@ -56,13 +57,19 @@ module Envault
         prefix: @class_options['prefix'],
         debug: @class_options['debug']
       )
-      puts Formatter.escape_yaml(to.encrypt_process(decrypted, cipher_keys))
+      output = to.encrypt_process(decrypted, cipher_keys)
+      if options['overwrite']
+        Formatter.write_escape_yaml(options['source'], output)
+      else
+        puts Formatter.escape_yaml(output)
+      end
     end
 
     desc "encrypt_file", "exp. envault -e -s .env -k '^PASSWORD_.*' '^API_KEY_.*'"
     option :source, aliases: '-s', type: :array, required: true, desc: 'secret'
     option :keys, aliases: '-k', type: :array, required: false, desc: 'keys'
     option :plain_text, aliases: '-t', type: :array, default: [], required: false, desc: 'plain'
+    option :output, aliases: '-o', type: :string, default: nil, desc: 'output'
     def encrypt_file
       result = {}
       options['plain_text'].each do |plain_text_path|
@@ -71,12 +78,17 @@ module Envault
       options['source'].each do |secret_yaml_path|
         result = result.merge(@core.encrypt_yaml(secret_yaml_path, options['keys']))
       end
-      puts Formatter.escape_yaml(result)
+      if options['output']
+        Formatter.write_escape_yaml(options['output'], result)
+      else
+        puts Formatter.escape_yaml(result)
+      end
     end
 
     desc "decrypt_file", "exp. envault -d -s .env"
     option :source, aliases: '-s', type: :array, required: true, desc: 'source'
     option :plain_text, aliases: '-t', type: :array, default: [], required: false, desc: 'plain_text'
+    option :output, aliases: '-o', type: :string, default: nil, desc: 'output'
     def decrypt_file
       result = {}
       options['plain_text'].each do |plain_text_path|
@@ -85,7 +97,11 @@ module Envault
       options['source'].each do |encrypt_yaml_path|
         result = result.merge(@core.decrypt_yaml(encrypt_yaml_path))
       end
-      puts Formatter.escape_yaml(result)
+      if options['output']
+        Formatter.write_escape_yaml(options['output'], result)
+      else
+        puts Formatter.escape_yaml(result)
+      end
     end
 
     desc "load", "load"
