@@ -89,6 +89,35 @@ $ envault -d -s .env.encrypt -c envault.yml --profile production                
         from /Users/toyama-h/bin/envault:17:in `<main>'
 ```
 
+## reencrypt(config)
+```bash
+$ cat .envault.test
+old_staging:
+  passphrase: ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ
+  sign_passphrase: ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ
+  salt: ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ
+  prefix: OLD_ENVAULT_
+
+staging:
+  passphrase: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+  sign_passphrase: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+  salt: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+  prefix: ENVAULT_
+
+$ cat .env.encrypt
+OLD_ENVAULT_A: "aaaaaaaaaaaaaa"
+OLD_ENVAULT_B: "bbbbbbbbbbbbbbb"
+C: "hoge"
+
+$ envault reencrypt_file -s .env.encrypt -c ~/.envault --from_profile old_staging --to_profile staging --overwrite
+
+$ cat .env.encrypt
+ENVAULT_A: "ccccccccccccccc"
+ENVAULT_B: "ddddddddddddddd"
+C: "hoge"
+
+```
+
 ## Load AND command(Environment Variables)
 ```bash
 $ envault load -s .env.encrypt --command 'echo $PASSWORD_A'

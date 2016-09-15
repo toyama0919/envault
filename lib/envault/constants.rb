@@ -3,5 +3,5 @@ module Envault
   DEFAULT_ENV_PREFIX = "ENVAULT_"
   DEFAULT_CIPHER = "aes-256-cbc"
   DEFAULT_DIGEST = "SHA256"
-  SKIP_INITIALIZE_commands = ["reencrypt_file"]
+  SKIP_INITIALIZE_COMMANDS = ["reencrypt_file"]
 end

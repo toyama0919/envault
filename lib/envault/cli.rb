@@ -16,7 +16,7 @@ module Envault
       super(args, options, config)
       @class_options = config[:shell].base.options
       current_command = config[:current_command].name
-      unless SKIP_INITIALIZE.include?(current_command)
+      unless ::SKIP_INITIALIZE_COMMANDS.include?(current_command)
         @core = Core.new(
           config: @class_options['config'],
           profile: @class_options['profile'],
