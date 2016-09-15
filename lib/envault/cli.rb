@@ -15,13 +15,16 @@ module Envault
     def initialize(args = [], options = {}, config = {})
       super(args, options, config)
       @class_options = config[:shell].base.options
-      @core = Core.new(
-        config: @class_options['config'],
-        profile: @class_options['profile'],
-        prefix: @class_options['prefix'],
-        debug: @class_options['debug']
-      )
-      @logger = @core.logger
+      current_command = config[:current_command].name
+      unless SKIP_INITIALIZE.include?(current_command)
+        @core = Core.new(
+          config: @class_options['config'],
+          profile: @class_options['profile'],
+          prefix: @class_options['prefix'],
+          debug: @class_options['debug']
+        )
+        @logger = @core.logger
+      end
     end
 
     desc "encrypt", "encrypt string"
