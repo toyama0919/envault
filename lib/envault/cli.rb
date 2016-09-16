@@ -16,12 +16,12 @@ module Envault
       super(args, options, config)
       @class_options = config[:shell].base.options
       current_command = config[:current_command].name
-      unless ::SKIP_INITIALIZE_COMMANDS.include?(current_command)
+      unless SKIP_INITIALIZE_COMMANDS.include?(current_command)
         @core = Core.new(
-          config: @class_options['config'],
-          profile: @class_options['profile'],
-          prefix: @class_options['prefix'],
-          debug: @class_options['debug']
+          config: @class_options[:config],
+          profile: @class_options[:profile],
+          prefix: @class_options[:prefix],
+          debug: @class_options[:debug]
         )
         @logger = @core.logger
       end
@@ -30,13 +30,13 @@ module Envault
     desc "encrypt", "encrypt string"
     option :source, aliases: '-s', type: :string, required: true, desc: 'source', banner: 'source'
     def encrypt
-      puts @core.cryptor.encrypt_and_sign(options['source'])
+      puts @core.cryptor.encrypt_and_sign(options[:source])
     end
 
     desc "decrypt", "decrypt string"
     option :source, aliases: '-s', type: :string, required: true, desc: 'source'
     def decrypt
-      puts @core.cryptor.decrypt_and_verify(options['source'])
+      puts @core.cryptor.decrypt_and_verify(options[:source])
     end
 
     desc "reencrypt_file", "reencrypt_file"
@@ -45,24 +45,24 @@ module Envault
     option :to_profile, type: :string, required: true, desc: 'to_profile'
     option :overwrite, type: :boolean, default: false, desc: 'overwrite'
     def reencrypt_file
-      yaml = YAML.load_file(options['source'])
+      yaml = YAML.load_file(options[:source])
       from = Core.new(
-        config: @class_options['config'],
-        profile: options['from_profile'],
-        prefix: @class_options['prefix'],
-        debug: @class_options['debug']
+        config: @class_options[:config],
+        profile: options[:from_profile],
+        prefix: @class_options[:prefix],
+        debug: @class_options[:debug]
       )
       cipher_keys = from.get_cipher_keys(yaml).map{ |cipher_key| cipher_key.gsub(/^#{from.prefix}/, '') }
-      decrypted = from.decrypt_yaml(options['source'])
+      decrypted = from.decrypt_yaml(options[:source])
       to = Core.new(
-        config: @class_options['config'],
-        profile: options['to_profile'],
-        prefix: @class_options['prefix'],
-        debug: @class_options['debug']
+        config: @class_options[:config],
+        profile: options[:to_profile],
+        prefix: @class_options[:prefix],
+        debug: @class_options[:debug]
       )
       output = to.encrypt_process(decrypted, cipher_keys)
-      if options['overwrite']
-        Formatter.write_escape_yaml(options['source'], output)
+      if options[:overwrite]
+        Formatter.write_escape_yaml(options[:source], output)
       else
         puts Formatter.escape_yaml(output)
       end
@@ -75,14 +75,14 @@ module Envault
     option :output, aliases: '-o', type: :string, default: nil, desc: 'output'
     def encrypt_file
       result = {}
-      options['plain_text'].each do |plain_text_path|
+      options[:plain_text].each do |plain_text_path|
         result = result.merge(YAML.load(ERB.new(File.read(plain_text_path)).result))
       end
-      options['source'].each do |secret_yaml_path|
-        result = result.merge(@core.encrypt_yaml(secret_yaml_path, options['keys']))
+      options[:source].each do |secret_yaml_path|
+        result = result.merge(@core.encrypt_yaml(secret_yaml_path, options[:keys]))
       end
-      if options['output']
-        Formatter.write_escape_yaml(options['output'], result)
+      if options[:output]
+        Formatter.write_escape_yaml(options[:output], result)
       else
         puts Formatter.escape_yaml(result)
       end
@@ -94,14 +94,14 @@ module Envault
     option :output, aliases: '-o', type: :string, default: nil, desc: 'output'
     def decrypt_file
       result = {}
-      options['plain_text'].each do |plain_text_path|
+      options[:plain_text].each do |plain_text_path|
         result = result.merge(YAML.load(ERB.new(File.read(plain_text_path)).result))
       end
-      options['source'].each do |encrypt_yaml_path|
+      options[:source].each do |encrypt_yaml_path|
         result = result.merge(@core.decrypt_yaml(encrypt_yaml_path))
       end
-      if options['output']
-        Formatter.write_escape_yaml(options['output'], result)
+      if options[:output]
+        Formatter.write_escape_yaml(options[:output], result)
       else
         puts Formatter.escape_yaml(result)
       end
@@ -111,7 +111,7 @@ module Envault
     option :sources, aliases: '-s', type: :array, required: true, default: [DEFAULT_SOURCE_FILE], desc: 'source'
     option :command, type: :string, desc: 'source'
     def load
-      options['sources'].each do |source|
+      options[:sources].each do |source|
         begin
           @core.load(source)
         rescue => e
@@ -119,7 +119,7 @@ module Envault
         end
       end
       @logger.debug(ENV)
-      exec(options['command']) if options['command']
+      exec(options[:command]) if options[:command]
     end
   end
 end
