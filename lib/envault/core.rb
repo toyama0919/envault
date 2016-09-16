@@ -1,5 +1,4 @@
 require 'dotenv'
-require 'thor'
 require 'pp'
 require 'logger'
 require 'tempfile'

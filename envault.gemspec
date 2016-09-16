@@ -5,8 +5,8 @@ require File.expand_path('../lib/envault/version', __FILE__)
 Gem::Specification.new do |gem|
   gem.name          = "envault"
   gem.version       = Envault::VERSION
-  gem.summary       = %q{Summary}
-  gem.description   = %q{Description}
+  gem.summary       = %q{Encrypt secret information environment variables by yaml.}
+  gem.description   = %q{Encrypt secret information environment variables by yaml.}
   gem.license       = "MIT"
   gem.authors       = ["toyama0919"]
   gem.email         = "toyama0919@gmail.com"
