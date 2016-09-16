@@ -7,6 +7,7 @@ module Envault
     map '-e' => :encrypt_file
     map '-d' => :decrypt_file
     map '-r' => :reencrypt_file
+    map '-l' => :load
 
     class_option :config, aliases: '-c', type: :string ,desc: 'config'
     class_option :profile, aliases: '-p', type: :string, default: 'default',desc: 'profile'
@@ -27,19 +28,19 @@ module Envault
       end
     end
 
-    desc "encrypt", "encrypt string"
+    desc "encrypt", "encrypt string. exp: envault encrypt -s hoge"
     option :source, aliases: '-s', type: :string, required: true, desc: 'source', banner: 'source'
     def encrypt
       puts @core.cryptor.encrypt_and_sign(options[:source])
     end
 
-    desc "decrypt", "decrypt string"
+    desc "decrypt", "decrypt string. exp: envault decrypt -s hoge"
     option :source, aliases: '-s', type: :string, required: true, desc: 'source'
     def decrypt
       puts @core.cryptor.decrypt_and_verify(options[:source])
     end
 
-    desc "reencrypt_file", "reencrypt_file"
+    desc "-r", "reencrypt file. exp: envault -r -s .env.encrypt -c ~/.envault --from_profile staging --to_profile production"
     option :source, aliases: '-s', type: :string, required: true, desc: 'source'
     option :from_profile, type: :string, required: true, desc: 'from_profile'
     option :to_profile, type: :string, required: true, desc: 'to_profile'
@@ -68,7 +69,7 @@ module Envault
       end
     end
 
-    desc "encrypt_file", "exp. envault -e -s .env -k '^PASSWORD_.*' '^API_KEY_.*'"
+    desc "-e", "encrypt file. exp. envault -e -s .env -k '^PASSWORD_.*' '^API_KEY_.*'"
     option :source, aliases: '-s', type: :array, required: true, desc: 'secret'
     option :keys, aliases: '-k', type: :array, required: false, desc: 'keys'
     option :plain_text, aliases: '-t', type: :array, default: [], required: false, desc: 'plain'
@@ -88,7 +89,7 @@ module Envault
       end
     end
 
-    desc "decrypt_file", "exp. envault -d -s .env"
+    desc "-d", "decrypt file. exp: envault -d -s .env"
     option :source, aliases: '-s', type: :array, required: true, desc: 'source'
     option :plain_text, aliases: '-t', type: :array, default: [], required: false, desc: 'plain_text'
     option :output, aliases: '-o', type: :string, default: nil, desc: 'output'
@@ -107,7 +108,7 @@ module Envault
       end
     end
 
-    desc "load", "load"
+    desc "-l", "load environment. exp: envault -l -s .env --command 'echo $myhostname'"
     option :sources, aliases: '-s', type: :array, required: true, default: [DEFAULT_SOURCE_FILE], desc: 'source'
     option :command, type: :string, desc: 'source'
     def load
