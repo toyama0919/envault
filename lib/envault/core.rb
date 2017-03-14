@@ -80,8 +80,8 @@ module Envault
     private
 
     def get_cryptor(passphrase, sign_passphrase, salt)
-      key = ActiveSupport::KeyGenerator.new(passphrase).generate_key(salt, 64)
-      signature_key = ActiveSupport::KeyGenerator.new(sign_passphrase).generate_key(salt, 64) if sign_passphrase
+      key = ActiveSupport::KeyGenerator.new(passphrase).generate_key(salt, 32)
+      signature_key = ActiveSupport::KeyGenerator.new(sign_passphrase).generate_key(salt, 32) if sign_passphrase
 
       if signature_key
         ActiveSupport::MessageEncryptor.new(key, signature_key, cipher: DEFAULT_CIPHER, digest: DEFAULT_DIGEST)
