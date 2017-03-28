@@ -21,7 +21,7 @@ Gem::Specification.new do |gem|
 
   gem.add_dependency 'thor'
   gem.add_dependency 'dotenv'
-  gem.add_dependency 'activesupport', ">=4", "<5"
+  gem.add_dependency 'activesupport', ">= 4.0.0"
 
   gem.add_development_dependency 'bundler'
   gem.add_development_dependency 'pry'
