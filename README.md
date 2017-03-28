@@ -174,9 +174,3 @@ Or install it yourself as:
 * [Issues](https://github.com/toyama0919/envault/issues)
 * [Documentation](http://rubydoc.info/gems/envault/frames)
 * [Email](mailto:toyama0919@gmail.com)
-
-## Copyright
-
-Copyright (c) 2016 toyama0919
-
-See [LICENSE.txt](../LICENSE.txt) for details.
