@@ -1,4 +1,6 @@
-# envault [![Build Status](https://secure.travis-ci.org/toyama0919/envault.png?branch=master)](http://travis-ci.org/toyama0919/envault)
+# envault
+[![Build Status](https://secure.travis-ci.org/toyama0919/envault.png?branch=master)](http://travis-ci.org/toyama0919/envault)
+[![Gem Version](https://badge.fury.io/rb/envault.svg)](http://badge.fury.io/rb/envault)
 
 Encrypt secret information environment variables by yaml.
 
