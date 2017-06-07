@@ -26,11 +26,12 @@ staging:
   prefix: ENVAULT_
 
 production:
-  passphrase: YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
-  sign_passphrase: YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
-  salt: YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
+  provider: kms
+  key_id: XXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
   prefix: ENVAULT_
 ```
+
+* AWS KMS support. 
 
 ## Encrypt and Decrypt
 ```bash
