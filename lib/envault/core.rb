@@ -12,7 +12,11 @@ module Envault
       @logger = Logger.new(STDOUT)
       @logger.level = debug ? Logger::DEBUG : Logger::INFO
       profile = get_profile(config, profile)
-      @cryptor = get_cryptor(profile[:passphrase] || '', profile[:sign_passphrase], profile[:salt] || '')
+      @cryptor = if profile[:provider] == 'kms'
+        Cryptor::Kms.new(profile)
+      else
+        Cryptor::Simple.new(profile)
+      end
       @prefix = prefix || profile[:prefix] || DEFAULT_ENV_PREFIX
     end
 
@@ -25,12 +29,16 @@ module Envault
       cipher_keys = get_cipher_keys(hash, keys)
       encrypted = hash.map do |k, v|
         if cipher_keys.include?(k)
-          [@prefix + k, @cryptor.encrypt_and_sign(v)]
+          encrypt_value(@prefix + k, v)
         else
           [k, v]
         end
       end
       Hash[encrypted]
+    end
+
+    def encrypt_value(key, value)
+      [key, @cryptor.encrypt(value)]
     end
 
     def decrypt_yaml(path)
@@ -42,12 +50,16 @@ module Envault
       cipher_keys = get_cipher_keys(hash)
       decrypted = hash.map do |k, v|
         if cipher_keys.include?(k)
-          [k.gsub(/^#{@prefix}/, ''), @cryptor.decrypt_and_verify(v)]
+          decrypt_value(k.gsub(/^#{@prefix}/, ''), v)
         else
           [k, v]
         end
       end
       Hash[decrypted]
+    end
+
+    def decrypt_value(key, value)
+      [key, @cryptor.decrypt(value)]
     end
 
     def get_cipher_keys(hash, keys = ["^#{@prefix}.*"])
@@ -98,12 +110,20 @@ module Envault
       unless profile
         raise %Q{invalid profile [#{profile_name}].}
       end
-      {
-        passphrase: profile['passphrase'],
-        sign_passphrase: profile['sign_passphrase'],
-        salt: profile['salt'],
-        prefix: profile['prefix']
-      }
+      if profile['provider'] == 'kms'
+        {
+          provider: profile['provider'],
+          key_id: profile['key_id'],
+          prefix: profile['prefix']
+        }
+      else
+        {
+          passphrase: profile['passphrase'],
+          sign_passphrase: profile['sign_passphrase'],
+          salt: profile['salt'],
+          prefix: profile['prefix']
+        }
+      end
     end
 
     def get_profile_form_env

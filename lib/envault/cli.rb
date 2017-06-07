@@ -31,13 +31,13 @@ module Envault
     desc "encrypt", "encrypt string. exp: envault encrypt -s hoge"
     option :source, aliases: '-s', type: :string, required: true, desc: 'source', banner: 'source'
     def encrypt
-      puts @core.cryptor.encrypt_and_sign(options[:source])
+      puts @core.cryptor.encrypt(options[:source])
     end
 
     desc "decrypt", "decrypt string. exp: envault decrypt -s hoge"
     option :source, aliases: '-s', type: :string, required: true, desc: 'source'
     def decrypt
-      puts @core.cryptor.decrypt_and_verify(options[:source])
+      puts @core.cryptor.decrypt(options[:source])
     end
 
     desc "-r", "reencrypt file. exp: envault -r -s .env.encrypt -c ~/.envault --from_profile staging --to_profile production"

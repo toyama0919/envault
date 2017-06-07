@@ -4,6 +4,8 @@ require 'envault/core'
 require 'envault/cli'
 require 'envault/environment'
 require 'envault/formatter'
+require 'envault/cryptor/kms'
+require 'envault/cryptor/simple'
 
 module Envault
   def self.load(*source_files)
