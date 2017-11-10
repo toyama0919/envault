@@ -9,7 +9,7 @@ module Envault
     end
 
     def self.write_escape_yaml(path, hash, quote = true)
-      File.write(path, escape_yaml(hash))
+      File.write(path, escape_yaml(hash, quote))
     end
   end
 end
