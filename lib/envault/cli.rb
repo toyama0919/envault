@@ -45,6 +45,7 @@ module Envault
     option :from_profile, type: :string, required: true, desc: 'from_profile'
     option :to_profile, type: :string, required: true, desc: 'to_profile'
     option :overwrite, type: :boolean, default: false, desc: 'overwrite'
+    option :quote, type: :boolean, default: true, desc: 'quote'
     def reencrypt_file
       yaml = YAML.load_file(options[:source])
       from = Core.new(
@@ -63,9 +64,9 @@ module Envault
       )
       output = to.encrypt_process(decrypted, cipher_keys)
       if options[:overwrite]
-        Formatter.write_escape_yaml(options[:source], output)
+        Formatter.write_escape_yaml(options[:source], output, options[:quote])
       else
-        puts Formatter.escape_yaml(output)
+        puts Formatter.escape_yaml(output, options[:quote])
       end
     end
 
@@ -74,6 +75,7 @@ module Envault
     option :keys, aliases: '-k', type: :array, required: false, desc: 'keys'
     option :plain_text, aliases: '-t', type: :array, default: [], required: false, desc: 'plain'
     option :output, aliases: '-o', type: :string, default: nil, desc: 'output'
+    option :quote, type: :boolean, default: true, desc: 'quote'
     def encrypt_file
       result = {}
       options[:plain_text].each do |plain_text_path|
@@ -83,9 +85,9 @@ module Envault
         result = result.merge(@core.encrypt_yaml(secret_yaml_path, options[:keys]))
       end
       if options[:output]
-        Formatter.write_escape_yaml(options[:output], result)
+        Formatter.write_escape_yaml(options[:output], result, options[:quote])
       else
-        puts Formatter.escape_yaml(result)
+        puts Formatter.escape_yaml(result, options[:quote])
       end
     end
 
@@ -93,6 +95,7 @@ module Envault
     option :source, aliases: '-s', type: :array, required: true, desc: 'source'
     option :plain_text, aliases: '-t', type: :array, default: [], required: false, desc: 'plain_text'
     option :output, aliases: '-o', type: :string, default: nil, desc: 'output'
+    option :quote, type: :boolean, default: true, desc: 'quote'
     def decrypt_file
       result = {}
       options[:plain_text].each do |plain_text_path|
@@ -102,9 +105,9 @@ module Envault
         result = result.merge(@core.decrypt_yaml(encrypt_yaml_path))
       end
       if options[:output]
-        Formatter.write_escape_yaml(options[:output], result)
+        Formatter.write_escape_yaml(options[:output], result, options[:quote])
       else
-        puts Formatter.escape_yaml(result)
+        puts Formatter.escape_yaml(result, options[:quote])
       end
     end
 
